@@ -1,38 +1,34 @@
-import tkinter as tk
-from tkinter import ttk
+from PyQt6 import QtWidgets, uic, QtCore
+import datetime
 
-gh = tk.Tk()
-gh.geometry('480x320')
-gh.attributes('-fullscreen', True)
-canvas = tk.Canvas(gh, width=480, height=320)
+app = QtWidgets.QApplication([])
+ui = uic.loadUi('design.ui')
 
-canvas.create_rectangle(0,0, 480, 320, fill='grey')
-canvas.create_rectangle(0,0, 480, 30, fill='white')
+ui.val_temp.setText(f'{10} C°')
+ui.mods.addItems(['Auto', 'Manual'])
 
-canvas.create_text(35, 14, text='Cores:', fill='black', font='Helvetica 11 bold')
+def timerEvent():
+    global time
+    now = datetime.datetime.now()
+    time = QtCore.QTime(now.hour, now.minute, now.second)
+    print(time.toString("hh:mm:ss"))
+    ui.datetime.setDateTime(datetime.datetime.now())
 
-canvas.create_text(120, 14, text='Current state:', fill='black',  font='Helvetica 11 bold')
-canvas.create_text(210, 14, text='Util,%', fill='black',  font='Helvetica 11 bold')
-canvas.create_text(275, 14, text='Prod,%', fill='black',  font='Helvetica 11 bold')
-canvas.create_text(350, 14, text='Temp,C°', fill='black',  font='Helvetica 11 bold')
-canvas.create_text(430, 14, text='Action', fill='black',  font='Helvetica 11 bold')
 
-btn = []
-pixel = tk.PhotoImage(width=1, height=1)
+timer = QtCore.QTimer()
+now = datetime.datetime.now()
+time = QtCore.QTime(now.hour, now.minute, now.second)
 
-for i in range(4):
-    canvas.create_text(38, 45+i*25, text=f'Core {i+1}:', fill='black', font='Helvetica 11 bold')
-    canvas.create_text(120, 45+i*25, text='Online', fill='black', font='Helvetica 11 bold')
-    canvas.create_text(210, 45+i*25, text=f'{34 + i*10}%', fill='black', font='Helvetica 11 bold')
-    canvas.create_text(275, 45+i*25, text=f'{34 + i*10}%', fill='black', font='Helvetica 11 bold')
-    canvas.create_text(350, 45+i*25, text=f'{34 + i*10}C°', fill='black', font='Helvetica 11 bold')
+timer.timeout.connect(timerEvent)
+timer.start(1000)
 
-    btn.append(tk.Button(gh, image=pixel, width=35, height=15, text='Stop', command=gh.destroy, font='Helvetica 11 bold'))
-    btn[i].place(x=435, y=33+i*25)
-    canvas.create_text(410, 45+i*25, text='Stop', fill='black', font='Helvetica 11 bold')
+def mode_changer(what):
+    print(what)
 
-canvas.create_rectangle(0, 150, 480, 180, fill='white')
+def fan_in(val):
+    print(val)
 
-canvas.pack()
-
-gh.mainloop()
+ui.mods.currentIndexChanged.connect(mode_changer)
+ui.slight.valueChanged.connect(fan_in)
+ui.show()
+app.exec()
