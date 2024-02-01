@@ -6,7 +6,7 @@ ui = uic.loadUi('design.ui')
 
 ui.val_temp.setText(f'{10} C°')
 ui.mods.addItems(['Auto', 'Manual'])
-
+ui.showFullScreen()
 def timerEvent():
     global time
     now = datetime.datetime.now()
