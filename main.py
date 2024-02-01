@@ -3,6 +3,7 @@ import datetime
 
 app = QtWidgets.QApplication([])
 ui = uic.loadUi('design.ui')
+ui.showFullScreen()
 
 ui.val_temp.setText(f'{10} C°')
 ui.mods.addItems(['Auto', 'Manual'])
